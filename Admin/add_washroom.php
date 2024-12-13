@@ -1,178 +1,125 @@
-<?php include('partials/menu.php'); ?>
-<?php include('dbh/ReadMainLoacations.php') ?>
+<?php
+ob_start(); // Start output buffering
+session_start();
+include('partials/menu.php');
+include('dbh/ReadMainLoacations.php');
+?>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="../JS/locationfilter.js"></script>
+
 <div class="main-content">
-      <div class="wrapper">
-          <h1>Add Washroom</h1>
+    <div class="wrapper">
+        <h1>Add Washroom</h1>
+        <br><br>
 
-          <br><br>
+        <?php
+        if (isset($_SESSION['upload'])) {
+            echo $_SESSION['upload']; // Display message
+            unset($_SESSION['upload']); // Remove message
+        }
 
-          <?php 
+        if (isset($_SESSION['add'])) {
+            echo $_SESSION['add']; // Display message
+            unset($_SESSION['add']); // Remove message
+        }
+        ?>
 
-              if(isset($_SESSION['upload']))
-              {
-                echo $_SESSION['upload']; //display msg
-                unset($_SESSION['upload']); // remove msg
-              }
-
-              if(isset($_SESSION['add']))
-              {
-                echo $_SESSION['add']; //display msg
-                unset($_SESSION['add']); // remove msg
-              }
-
-        
-
-          ?>
-
-          <!--add food start-->
-          <form action="" method="POST" enctype="multipart/form-data">
-
-                <table class="tbl-30">
-                
+        <form action="" method="POST" enctype="multipart/form-data">
+            <table class="tbl-30">
                 <tr>
                     <td>Washroom ID: </td>
                     <td>
-                      <input type="text" name="title" placeholder="Washroom ID">
+                        <input type="text" name="title" placeholder="Washroom ID">
                     </td>
-                  </tr>
-                
+                </tr>
+
                 <tr>
                     <td>Main Location: </td>
                     <td>
-                      <?php if(isset($locations)):?>
-                      <?php foreach($locations as $location):?>
-
-                                <input type="radio" name="location" value="<?php echo $location['id']?>"> <?php echo $location['mainlocation']?><br>
-                        
-
-                      <?php endforeach;?>
-                      <?php endif; ?>
+                        <?php if (isset($locations)) : ?>
+                            <?php foreach ($locations as $location) : ?>
+                                <input type="radio" name="location" value="<?php echo $location['id'] ?>"> 
+                                <?php echo $location['mainlocation'] ?><br>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     </td>
-                  </tr>
+                </tr>
 
-                  <tr>
+                <tr>
                     <td>Sub Location:</td>
                     <td>
                         <select name="category">
+                            <?php
+                            $sql = "SELECT * FROM table_sublocation WHERE active='Yes'";
+                            $res = mysqli_query($conn, $sql);
 
-                            <?php 
-                                //display sub locations from database
-                                //sql get all active sublocation
-                                $sql = "SELECT * FROM  table_sublocation WHERE active='Yes'";
-                                
-                                //execute query
-                                $res = mysqli_query($conn, $sql);
-
-                                //check have sublocation or not
-                                $count = mysqli_num_rows($res);
-
-                                if($count>0)
-                                {
-                                     //available sublocation
-                                     while($row=mysqli_fetch_assoc($res))
-                                     {
-                                        //get details
-                                        $id = $row['id'];
-                                        $sublocation = $row['sublocation'];
-
-                                        ?>
-                                       
-                                       <option value="<?php echo $id; ?>" id="mainloc<?php echo $row['mainlocID']; ?>"><?php echo $sublocation; ?></option>
-                                        <?php
-                                     }
+                            if ($res && mysqli_num_rows($res) > 0) {
+                                while ($row = mysqli_fetch_assoc($res)) {
+                                    $id = $row['id'];
+                                    $sublocation = $row['sublocation'];
+                                    ?>
+                                    <option value="<?php echo $id; ?>" id="mainloc<?php echo $row['mainlocID']; ?>">
+                                        <?php echo $sublocation; ?>
+                                    </option>
+                                    <?php
                                 }
-                                else
-                                {
-                                     //not have sublocation
-                                     ?>
-                                     <option value="0">No Washroom Found</option>
-                                     <?php
-                                }
-
-
-                                //Display no dropdown
-                            
-
+                            } else {
+                                ?>
+                                <option value="0">No Washroom Found</option>
+                                <?php
+                            }
                             ?>
-
                         </select>
                     </td>
-                  </tr>
+                </tr>
 
-                  <tr>
+                <tr>
                     <td>Active: </td>
                     <td>
-                      <input type="radio" name="status" value="Yes">Yes
-                      <input type="radio" name="status" value="No">No
+                        <input type="radio" name="status" value="Yes">Yes
+                        <input type="radio" name="status" value="No">No
                     </td>
-                  </tr>
+                </tr>
 
-                  <tr>
+                <tr>
                     <td colspan="2">
-                      <input type="submit" name="submit" value="Add Washroom" class="btn-secodary">
+                        <input type="submit" name="submit" value="Add Washroom" class="btn-secodary">
                     </td>
-                  </tr>
+                </tr>
+            </table>
+        </form>
 
+        <?php
+        if (isset($_POST['submit'])) {
+            $title = $_POST['title'];
+            $mainlocation = $_POST['location'];
+            $sublocation = $_POST['category'];
+            $active = isset($_POST['status']) ? $_POST['status'] : "No";
 
-                </table>
-            </form>
+            $sql2 = "INSERT INTO table_washroom SET
+                     washroomid='$title',
+                     mainlocID='$mainlocation',
+                     sublocID='$sublocation',
+                     `status`='$active'";
 
-            <?php
-                //check button click or not
-                if(isset($_POST['submit']))
-                {
-                    //add food database
-                    //echo "click";
+            $res2 = mysqli_query($conn, $sql2);
 
-                    //get data from form
-                    $title = $_POST['title'];
-                    $mainlocation = $_POST['location'];
-                    $sublocation = $_POST['category'];
-
-                    if(isset($_POST['status']))
-                    {
-                        $active = $_POST['status'];
-                    }
-                    else
-                    {
-                        $active = "No";   //setting default value
-                    }
-
-                    
-
-                    //insert database
-                    //create sql query
-                    $sql2 = "INSERT INTO table_washroom SET
-                    washroomid='$title',
-                    mainlocID ='$mainlocation',
-                    sublocID ='$sublocation',
-                    `status` ='$active'
-                  ";
- 
-                  //execute query 
-                  $res2 = mysqli_query($conn, $sql2);
-
-                  //check data inserted or not
-                  if($res2 == true)
-                  {
-                     $_SESSION['add'] = "<div class ='success'>Washroom Added Successfully.</div>";
-                     //redirect
-                     header("location:".SITEURL.'admin/manage_washroom.php');
-                    //  header("location:".SITEURL.'admin/manage_sublocation.php');
-                  }
-                  else
-                  {
-                     $_SESSION['add'] = "<div class ='error'>Failed to Add Washroom.</div>";
-                     //redirect
-                     header("location:".SITEURL.'admin/manage_washroom.php');
-                  }
-                
-                }
-            ?>
-      </div>
+            if ($res2 == true) {
+                $_SESSION['add'] = "<div class='success'>Washroom Added Successfully.</div>";
+                header("location:" . SITEURL . 'admin/manage_washroom.php');
+                exit();
+            } else {
+                $_SESSION['add'] = "<div class='error'>Failed to Add Washroom.</div>";
+                header("location:" . SITEURL . 'admin/manage_washroom.php');
+                exit();
+            }
+        }
+        ?>
+    </div>
 </div>
 
-
-<?php include('partials/footer.php'); ?>
+<?php
+include('partials/footer.php');
+ob_end_flush(); // End output buffering
+?>
