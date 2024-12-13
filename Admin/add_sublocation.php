@@ -1,5 +1,5 @@
 <?php include('partials/menu.php'); ?>
-
+<?php include('dbh/ReadMainLoacations.php') ?>
 <div class="main-content">
       <div class="wrapper">
           <h1>Add Sub Location</h1>
@@ -30,21 +30,27 @@
                   <tr>
                     <td>Main Location: </td>
                     <td>
-                    <input type="radio" name="location" value="Arrival">Arrival
-                    <input type="radio" name="location" value="Depature">Depature<br>
+                    <?php if(isset($locations)):?>
+                    <?php foreach($locations as $location):?>
+
+                              <input type="radio" name="location" value="<?php echo $location['id']?>"> <?php echo $location['mainlocation']?><br>
+                      
+
+                    <?php endforeach;?>
+                    <?php endif; ?>
                     </td>
                   </tr>
 
                   <td>Sub Location: </td>
                     <td>
-                      <input type="text" name="sublocation" placeholder="Sub Location">
+                      <input type="text" name="sublocation" placeholder="Sub Location" required>
                     </td>
                   </tr>
 
                   <tr>
                     <td>Active: </td>
                     <td>
-                      <input type="radio" name="active" value="Yes">Yes
+                      <input type="radio" name="active" value="Yes" required>Yes
                       <input type="radio" name="active" value="No">No
                     </td>
                   </tr>

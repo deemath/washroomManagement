@@ -1,5 +1,7 @@
 <?php include('partials/menu.php'); ?>
-
+<?php include('dbh/ReadMainLoacations.php') ?>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="../JS/locationfilter.js"></script>
 <div class="main-content">
       <div class="wrapper">
           <h1>Add Washroom</h1>
@@ -39,7 +41,14 @@
                 <tr>
                     <td>Main Location: </td>
                     <td>
-                      <input type="text" name="title" placeholder="Main location">
+                      <?php if(isset($locations)):?>
+                      <?php foreach($locations as $location):?>
+
+                                <input type="radio" name="location" value="<?php echo $location['id']?>"> <?php echo $location['mainlocation']?><br>
+                        
+
+                      <?php endforeach;?>
+                      <?php endif; ?>
                     </td>
                   </tr>
 
@@ -69,7 +78,8 @@
                                         $sublocation = $row['sublocation'];
 
                                         ?>
-                                        <option value="<?php echo $id; ?>"><?php echo $sublocation; ?></option>
+                                       
+                                       <option value="<?php echo $id; ?>" id="mainloc<?php echo $row['mainlocID']; ?>"><?php echo $sublocation; ?></option>
                                         <?php
                                      }
                                 }
@@ -94,8 +104,8 @@
                   <tr>
                     <td>Active: </td>
                     <td>
-                      <input type="radio" name="active" value="Yes">Yes
-                      <input type="radio" name="active" value="No">No
+                      <input type="radio" name="status" value="Yes">Yes
+                      <input type="radio" name="status" value="No">No
                     </td>
                   </tr>
 
@@ -118,11 +128,12 @@
 
                     //get data from form
                     $title = $_POST['title'];
-                    $category = $_POST['category'];
+                    $mainlocation = $_POST['location'];
+                    $sublocation = $_POST['category'];
 
-                    if(isset($_POST['active']))
+                    if(isset($_POST['status']))
                     {
-                        $active = $_POST['active'];
+                        $active = $_POST['status'];
                     }
                     else
                     {
@@ -134,9 +145,10 @@
                     //insert database
                     //create sql query
                     $sql2 = "INSERT INTO table_washroom SET
-                    title='$title',
-                    category_id ='$category',
-                    active ='$active'
+                    washroomid='$title',
+                    mainlocID ='$mainlocation',
+                    sublocID ='$sublocation',
+                    `status` ='$active'
                   ";
  
                   //execute query 
@@ -145,15 +157,16 @@
                   //check data inserted or not
                   if($res2 == true)
                   {
-                     $_SESSION['add'] = "<div class ='success'>Food Added Successfully.</div>";
+                     $_SESSION['add'] = "<div class ='success'>Washroom Added Successfully.</div>";
                      //redirect
-                     header('location:'.SITEURL.'admin/manage_washroom.php');
+                     header("location:".SITEURL.'admin/manage_washroom.php');
+                    //  header("location:".SITEURL.'admin/manage_sublocation.php');
                   }
                   else
                   {
-                     $_SESSION['add'] = "<div class ='error'>Failed to Add Food.</div>";
+                     $_SESSION['add'] = "<div class ='error'>Failed to Add Washroom.</div>";
                      //redirect
-                     header('location:'.SITEURL.'admin/manage_washroom.php');
+                     header("location:".SITEURL.'admin/manage_washroom.php');
                   }
                 
                 }

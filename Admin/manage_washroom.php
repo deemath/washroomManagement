@@ -55,35 +55,38 @@
             </tr>
 
             <?php 
+               
                  //create sql query get all food
-                 $sql = "SELECT * FROM table_washroom";
-
+                 ///i have changed query here
+                 $sql = "SELECT t.*,
+                           m.mainlocation AS main_location,
+                           s.sublocation AS sub_location
+                              FROM table_washroom t JOIN table_mainlocation m ON m.id = t.mainlocID JOIN table_sublocation s ON s.id = t.sublocID ";
+                 
                  //execute query
                  $res = mysqli_query($conn, $sql);
-
+                
                  //check have food or not
                  $count = mysqli_num_rows($res);
 
                  //create id num variable
                  $sn=1;
-
+              
                  if($count>0)
                  {             
+                  
                     //have data
                     while($row=mysqli_fetch_array($res))
                     {
-                        $id = $row['id'];
-                        $title = $row['title'];
-                        $active = $row['active'];
-                        $category_id = $row['category_id'];
+                       
 
                         ?>
 
                         <tr>
-                            <td><?php echo $sn++; ?></td>
-                            <td><?php echo $title; ?></td>
-                            <td><?php echo $category_id; ?></td>
-                            <td><?php echo $active; ?></td>
+                            <td><?php echo $row['washroomid']; ?></td>
+                            <td><?php echo $row['main_location']; ?></td>
+                            <td><?php echo $row['sub_location']; ?></td>
+                            <td><?php echo $row['status']; ?></td>
 
                             <td>
                                 <a href="<?php echo SITEURL; ?>admin/update_washroom.php?id="class="btn-secodary">Update Washroom</a>
@@ -98,7 +101,8 @@
                  else
                  {
                     //washroom not have
-                    echo "<tr><td colspan='7' class='error'> Washroom not Added Yet.</td></tr>"; 
+                    echo "<tr><td colspan='5' class='error'> Washroom not Added Yet.</td></tr>"; 
+
                  }
             ?>
 
