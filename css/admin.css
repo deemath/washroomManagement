@@ -127,6 +127,9 @@ table tr td {
 .footer {
   background-color: #102776 ;
   color: white;
+  bottom: 0;
+  position: fixed;
+  /* margin-bottom: 0; */
 }
 
 .footer p a {

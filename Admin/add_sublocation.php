@@ -73,6 +73,7 @@
                 if(isset($_POST['submit']))
                 {
                   //echo "click";
+                  $mainlocation= $_POST['location'];
 
                   $sublocation = $_POST['sublocation'];
 
@@ -91,7 +92,9 @@
                   //Create sql query
                   $sql = "INSERT INTO table_sublocation SET
                     sublocation='$sublocation',
-                    active='$active'
+                    active='$active',
+                    mainlocID='$mainlocation'
+
                   ";
 
                   $res = mysqli_query($conn, $sql);

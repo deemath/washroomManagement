@@ -89,8 +89,8 @@
                             <td><?php echo $row['status']; ?></td>
 
                             <td>
-                                <a href="<?php echo SITEURL; ?>admin/update_washroom.php?id="class="btn-secodary">Update Washroom</a>
-                                <a href="<?php echo SITEURL; ?>admin/delete_washroom.php?id=<"class="btn-third">Delete Washroom</a>
+                                <a href="<?php echo SITEURL; ?>admin/update_washroom.php?id=<?php echo $row['id']; ?>" class="btn-secodary">Update Washroom</a>
+                                <a href="<?php echo SITEURL; ?>admin/delete_washroom.php?id=<?php echo $row['id']; ?>"class="btn-third">Delete Washroom</a>
                              </td>
                         </tr>
 

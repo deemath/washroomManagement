@@ -14,6 +14,14 @@
                 //get all details
                 $sql2 = "SELECT * FROM table_washroom WHERE id=$id";
 
+
+               //  $sql = "SELECT t.*,
+               //       m.mainlocation AS main_location,
+               //       s.sublocation AS sub_location
+               //     FROM table_washroom t
+               //     JOIN table_mainlocation m ON m.id = t.mainlocID 
+               //     JOIN table_sublocation s ON s.id = t.sublocID ";
+      
                 //execute query
                 $res2 = mysqli_query($conn, $sql2);
 

@@ -66,7 +66,9 @@
 
             <?php 
                 //get all category
-                $sql = "SELECT * FROM table_sublocation";
+                $sql = "SELECT t.* ,
+                        m.mainlocation AS mainlocation FROM table_sublocation t 
+                        Join table_mainlocation m ON t.mainlocID = m.id ";
 
                 //execute query
                 $res = mysqli_query($conn, $sql);
@@ -90,7 +92,7 @@
                         ?>
                           <tr>
                              <td><?php echo $sn++; ?></td>
-                             <td>Arrival</td>
+                             <td><?php echo $row['mainlocation']; ?></td>
                              <td><?php echo $sublocation; ?></td>
                              <td><?php echo $active; ?></td>
                              <td>
