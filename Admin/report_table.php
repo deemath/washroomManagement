@@ -34,9 +34,33 @@ include('../configer/constants.php');
             text-align: center;
             font-weight: bold;
         }
+        #serch{
+          width: 89%;
+          height:5vh;
+        }
+        #serch-btn{
+          width: 10%;
+          height:6vh;
+          border: 0;
+          font-size: 18px;
+          color: #f4f4f4;
+          background-color:rgb(4, 17, 110);
+          
+        }
+        form{
+          padding: 10px 0px;
+          font-weight: 600;
+        
+        }
     </style>
 </head>
 <body>
+    <form action="<?php echo SITEURL?>admin/report_table.php?search=" method="get">
+      
+      <input type="text" name="search" id="serch" placeholder="Search by Main location / Sublocation / Washroom ID...">
+      <input type="submit" name="submit-search" value="Search" id="serch-btn">
+    </form>
+
     <table>
       <tr>
         <th>Main Location ID</th>
@@ -56,8 +80,19 @@ include('../configer/constants.php');
             exit;
         }
 
+        if(isset($_GET['submit-search'])){
+            $search = $_GET['search'];
+            $sql = "SELECT * FROM table_report ORDER BY record_id DESC 
+                  WHERE main_location = '$search'
+                  OR sublocation = '$search'
+                  OR washroom_id = '$search'";
+
+        }else{
+          $sql = "SELECT * FROM table_report ORDER BY record_id DESC";
+        }
+
         // Fetch all records from the database
-        $sql = "SELECT * FROM table_report ORDER BY record_id DESC";
+       
         $res = mysqli_query($conn, $sql);
 
         if ($res) {
@@ -73,18 +108,18 @@ include('../configer/constants.php');
               $timestamp = htmlspecialchars($row['timestamp']);
               $date = date('Y-m-d', strtotime($timestamp));
               $time = date('H:i:s', strtotime($timestamp));
-      ?>
-        <tr>
-          <td><?php echo $main_location_id; ?></td>
-          <td><?php echo $main_location; ?></td>
-          <td><?php echo $sub_location_id; ?></td>
-          <td><?php echo $sublocation; ?></td>
-          <td><?php echo $washroom_id; ?></td>
-          <td><?php echo $timestamp; ?></td>
-          <td><?php echo $date; ?></td>
-          <td><?php echo $time; ?></td>
-        </tr>
-      <?php
+            ?>
+              <tr>
+                <td><?php echo $main_location_id; ?></td>
+                <td><?php echo $main_location; ?></td>
+                <td><?php echo $sub_location_id; ?></td>
+                <td><?php echo $sublocation; ?></td>
+                <td><?php echo $washroom_id; ?></td>
+                <td><?php echo $timestamp; ?></td>
+                <td><?php echo $date; ?></td>
+                <td><?php echo $time; ?></td>
+              </tr>
+            <?php
             }
           } else {
             echo "<tr><td colspan='8' class='error'>No Records Found</td></tr>";
